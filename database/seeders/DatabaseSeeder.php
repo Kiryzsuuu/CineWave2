@@ -5,14 +5,11 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Film;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
@@ -29,14 +26,14 @@ class DatabaseSeeder extends Seeder
 
         // Create Categories
         $categories = [
-            ['name' => 'Action', 'slug' => 'action', 'icon' => '💥', 'order' => 1, 'is_active' => true],
-            ['name' => 'Comedy', 'slug' => 'comedy', 'icon' => '😂', 'order' => 2, 'is_active' => true],
-            ['name' => 'Drama', 'slug' => 'drama', 'icon' => '🎭', 'order' => 3, 'is_active' => true],
-            ['name' => 'Horror', 'slug' => 'horror', 'icon' => '👻', 'order' => 4, 'is_active' => true],
-            ['name' => 'Romance', 'slug' => 'romance', 'icon' => '💕', 'order' => 5, 'is_active' => true],
-            ['name' => 'Sci-Fi', 'slug' => 'sci-fi', 'icon' => '🚀', 'order' => 6, 'is_active' => true],
-            ['name' => 'Thriller', 'slug' => 'thriller', 'icon' => '🔪', 'order' => 7, 'is_active' => true],
-            ['name' => 'Documentary', 'slug' => 'documentary', 'icon' => '📹', 'order' => 8, 'is_active' => true],
+            ['name' => 'Action', 'slug' => 'action', 'order' => 1, 'is_active' => true],
+            ['name' => 'Comedy', 'slug' => 'comedy', 'order' => 2, 'is_active' => true],
+            ['name' => 'Drama', 'slug' => 'drama', 'order' => 3, 'is_active' => true],
+            ['name' => 'Horror', 'slug' => 'horror', 'order' => 4, 'is_active' => true],
+            ['name' => 'Romance', 'slug' => 'romance', 'order' => 5, 'is_active' => true],
+            ['name' => 'Sci-Fi', 'slug' => 'sci-fi', 'order' => 6, 'is_active' => true],
+            ['name' => 'Thriller', 'slug' => 'thriller', 'order' => 7, 'is_active' => true],
+            ['name' => 'Documentary', 'slug' => 'documentary', 'order' => 8, 'is_active' => true],
         ];
 
         foreach ($categories as $category) {
@@ -64,7 +61,7 @@ class DatabaseSeeder extends Seeder
                 'country' => 'USA',
                 'is_featured' => true,
                 'is_trending' => true,
-                'is_new_release' => false,
+                'is_new' => false,
                 'views_count' => 0,
                 'likes_count' => 0,
             ],
@@ -87,7 +84,7 @@ class DatabaseSeeder extends Seeder
                 'country' => 'USA',
                 'is_featured' => true,
                 'is_trending' => false,
-                'is_new_release' => false,
+                'is_new' => false,
                 'views_count' => 0,
                 'likes_count' => 0,
             ],

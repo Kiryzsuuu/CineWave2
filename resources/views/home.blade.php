@@ -67,24 +67,36 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
     }
 
     .btn-play {
-        background-color: #fff;
-        color: #000;
+        background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+        color: #fff;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+        border: none;
     }
 
     .btn-play:hover {
-        background-color: rgba(255,255,255,0.75);
+        background: linear-gradient(135deg, #f40612 0%, #d00812 100%);
+        transform: scale(1.05);
+        box-shadow: 0 6px 16px rgba(229, 9, 20, 0.6);
     }
 
     .btn-info {
-        background-color: rgba(109,109,110,0.7);
+        background: rgba(51, 51, 51, 0.8);
         color: #fff;
+        font-weight: 600;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
     }
 
     .btn-info:hover {
-        background-color: rgba(109,109,110,0.4);
+        background: rgba(51, 51, 51, 0.95);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.05);
     }
 
     /* Row Sections */

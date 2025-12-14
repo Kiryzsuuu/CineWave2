@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Jenssegers\Mongodb\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 
 class ActivityLog extends Model
 {
-    use HasFactory;
 
     protected $connection = 'mongodb';
     protected $collection = 'activity_logs';
@@ -37,7 +35,7 @@ class ActivityLog extends Model
      * Log an activity.
      */
     public static function logActivity(
-        ?int $userId,
+        string|int|null $userId,
         string $type,
         string $description,
         array $metadata = []

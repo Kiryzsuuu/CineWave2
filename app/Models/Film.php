@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Jenssegers\Mongodb\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 
 class Film extends Model
 {
-    use HasFactory;
 
     protected $connection = 'mongodb';
     protected $collection = 'films';
@@ -31,7 +29,7 @@ class Film extends Model
         'country',
         'is_featured',
         'is_trending',
-        'is_new_release',
+        'is_new',
         'views_count',
         'likes_count',
         'meta_title',
@@ -48,7 +46,7 @@ class Film extends Model
         'genre' => 'array',
         'is_featured' => 'boolean',
         'is_trending' => 'boolean',
-        'is_new_release' => 'boolean',
+        'is_new' => 'boolean',
         'views_count' => 'integer',
         'likes_count' => 'integer',
         'meta_keywords' => 'array',

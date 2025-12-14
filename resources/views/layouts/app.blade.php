@@ -298,6 +298,7 @@
                     <li><a href="{{ route('browse', ['category' => 'trending']) }}">Trending</a></li>
                     <li><a href="{{ route('browse', ['category' => 'new']) }}">Terbaru</a></li>
                     @auth
+                        <li><a href="{{ route('watchlist.index') }}"><i class="fas fa-heart"></i> My Watchlist</a></li>
                         @if(auth()->user()->is_admin)
                             <li><a href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
                         @endif
@@ -313,15 +314,31 @@
                     <i class="fas fa-search"></i>
                 </div>
                 @auth
-                    <div class="user-menu">
-                        <div class="user-avatar">
+                    <div class="user-menu" style="position: relative;">
+                        <div class="user-avatar" onclick="toggleUserMenu()" style="cursor: pointer;">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
+                        <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 45px; background: rgba(0,0,0,0.95); border: 1px solid #333; border-radius: 4px; min-width: 200px; padding: 10px 0; z-index: 1000;">
+                            <div style="padding: 10px 20px; border-bottom: 1px solid #333; color: #999; font-size: 12px;">
+                                {{ auth()->user()->email }}
+                            </div>
+                            <a href="{{ route('profile.show') }}" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">
+                                <i class="fas fa-user" style="margin-right: 10px;"></i> My Profile
+                            </a>
+                            @if(auth()->user()->is_admin)
+                                <a href="{{ route('admin.dashboard') }}" style="display: block; padding: 10px 20px; color: #fff; text-decoration: none; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">
+                                    <i class="fas fa-cog" style="margin-right: 10px;"></i> Admin Dashboard
+                                </a>
+                            @endif
+                            <div style="border-top: 1px solid #333; margin: 5px 0;"></div>
+                            <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" style="width: 100%; text-align: left; padding: 10px 20px; color: #fff; background: transparent; border: none; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">
+                                    <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                        @csrf
-                        <button type="submit" class="btn btn-secondary">Keluar</button>
-                    </form>
                 @else
                     <a href="{{ route('login') }}" class="btn btn-secondary">Masuk</a>
                     <a href="{{ route('register') }}" class="btn btn-primary">Daftar</a>
@@ -391,6 +408,22 @@
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Toggle user dropdown menu
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const userMenu = document.querySelector('.user-menu');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (userMenu && dropdown && !userMenu.contains(event.target)) {
+                dropdown.style.display = 'none';
             }
         });
 

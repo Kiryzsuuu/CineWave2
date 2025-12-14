@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manage Users - Admin')
+@section('title', 'Manage Categories - Admin')
 
 @push('styles')
 <style>
@@ -73,9 +73,9 @@
 @section('content')
 <div class="admin-container">
     <div class="admin-header">
-        <h1>Manage Users</h1>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add New User
+        <h1>Manage Categories</h1>
+        <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Category
         </a>
     </div>
 
@@ -83,54 +83,57 @@
         <table>
             <thead>
                 <tr>
+                    <th>Order</th>
                     <th>Name</th>
-                    <th>Email</th>
+                    <th>Slug</th>
                     <th>Status</th>
-                    <th>Role</th>
-                    <th>Joined</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse($users as $user)
+                @forelse($categories as $category)
                     <tr>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
+                        <td><strong>#{{ $category->order }}</strong></td>
                         <td>
-                            @if($user->is_verified)
-                                <span class="badge badge-success">Verified</span>
+                            <strong>{{ $category->name }}</strong>
+                        </td>
+                        <td><code>{{ $category->slug }}</code></td>
+                        <td>
+                            @if($category->is_active)
+                                <span class="badge badge-success">Active</span>
                             @else
-                                <span class="badge badge-danger">Unverified</span>
+                                <span class="badge badge-danger">Inactive</span>
                             @endif
                         </td>
                         <td>
-                            @if($user->is_admin)
-                                <span class="badge" style="background: rgba(229, 9, 20, 0.2); color: var(--netflix-red);">Admin</span>
-                            @else
-                                User
-                            @endif
-                        </td>
-                        <td>{{ $user->created_at ? $user->created_at->format('d M Y') : 'N/A' }}</td>
-                        <td>
-                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-secondary btn-small">Edit</a>
-                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure?')">
+                            <a href="{{ route('admin.categories.edit', $category->id) }}" class="btn btn-secondary btn-small">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this category?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-small" style="background: #dc3545;">Delete</button>
+                                <button type="submit" class="btn btn-small" style="background: #dc3545;">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 40px;">No users found</td>
+                        <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                            <i class="fas fa-folder" style="font-size: 48px; opacity: 0.3;"></i><br><br>
+                            No categories found. <a href="{{ route('admin.categories.create') }}" style="color: var(--netflix-red);">Add your first category</a>
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <div style="margin-top: 20px;">
-        {{ $users->links() }}
-    </div>
+    @if($categories->hasPages())
+        <div style="margin-top: 30px;">
+            {{ $categories->links() }}
+        </div>
+    @endif
 </div>
 @endsection

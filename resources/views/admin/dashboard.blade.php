@@ -187,7 +187,7 @@
                                 <span class="badge">User</span>
                             @endif
                         </td>
-                        <td>{{ $user->created_at->diffForHumans() }}</td>
+                        <td>{{ $user->created_at ? $user->created_at->diffForHumans() : 'N/A' }}</td>
                     </tr>
                 @empty
                     <tr>

@@ -13,12 +13,13 @@ class HomeController extends Controller
     {
         $featuredFilms = Film::where('is_featured', true)->orderBy('created_at', 'desc')->limit(10)->get();
         $trendingFilms = Film::where('is_trending', true)->orderBy('views_count', 'desc')->limit(10)->get();
-        $newReleases = Film::where('is_new_release', true)->orderBy('created_at', 'desc')->limit(10)->get();
+        $newReleases = Film::where('is_new', true)->orderBy('created_at', 'desc')->limit(10)->get();
         $categories = Category::where('is_active', true)->orderBy('order')->get();
         
         $categoryFilms = [];
         foreach ($categories->take(5) as $category) {
-            $categoryFilms[$category->name] = Film::whereJsonContains('categories', $category->slug)
+            // MongoDB can query arrays directly
+            $categoryFilms[$category->name] = Film::where('categories', $category->slug)
                                                   ->orderBy('rating', 'desc')
                                                   ->limit(10)
                                                   ->get();
@@ -31,18 +32,34 @@ class HomeController extends Controller
     {
         $query = Film::query();
 
-        if ($request->has('genre') && $request->genre) {
-            $query->whereJsonContains('genre', $request->genre);
+        // Filter by trending
+        if ($request->has('category') && $request->category === 'trending') {
+            $query->where('is_trending', true);
         }
-
-        if ($request->has('category') && $request->category) {
-            $query->whereJsonContains('categories', $request->category);
+        
+        // Filter by new releases
+        elseif ($request->has('category') && $request->category === 'new') {
+            $query->where('is_new', true);
+        }
+        
+        // Filter by genre category
+        elseif ($request->has('genre') && $request->genre) {
+            // MongoDB array query
+            $query->where('genre', $request->genre);
+        }
+        
+        // Filter by category slug
+        elseif ($request->has('category') && $request->category) {
+            // MongoDB array query
+            $query->where('categories', $request->category);
         }
 
         if ($request->has('search') && $request->search) {
-            $query->where(function($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            // MongoDB regex search
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'regex', "/$search/i")
+                  ->orWhere('description', 'regex', "/$search/i");
             });
         }
 
@@ -64,13 +81,9 @@ class HomeController extends Controller
             ActivityLog::logActivity(auth()->id(), 'film_view', "Viewed film: {$film->title}", ['film_id' => $film->id]);
         }
 
-        // Get similar films
+        // Get similar films by genre
         $similarFilms = Film::where('_id', '!=', $film->id)
-                           ->where(function($query) use ($film) {
-                               foreach ($film->genre as $genre) {
-                                   $query->orWhereJsonContains('genre', $genre);
-                               }
-                           })
+                           ->whereIn('genre', $film->genre ?? [])
                            ->limit(10)
                            ->get();
 

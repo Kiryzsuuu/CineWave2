@@ -60,9 +60,9 @@ class FilmController extends Controller
             'cast' => $request->cast ?? [],
             'language' => $request->language,
             'country' => $request->country,
-            'is_featured' => $request->is_featured ?? false,
-            'is_trending' => $request->is_trending ?? false,
-            'is_new_release' => $request->is_new_release ?? false,
+            'is_featured' => filter_var($request->is_featured, FILTER_VALIDATE_BOOLEAN),
+            'is_trending' => filter_var($request->is_trending, FILTER_VALIDATE_BOOLEAN),
+            'is_new' => filter_var($request->is_new, FILTER_VALIDATE_BOOLEAN),
             'views_count' => 0,
             'likes_count' => 0,
         ]);
@@ -111,9 +111,9 @@ class FilmController extends Controller
             'cast' => $request->cast ?? [],
             'language' => $request->language,
             'country' => $request->country,
-            'is_featured' => $request->is_featured ?? false,
-            'is_trending' => $request->is_trending ?? false,
-            'is_new_release' => $request->is_new_release ?? false,
+            'is_featured' => filter_var($request->is_featured, FILTER_VALIDATE_BOOLEAN),
+            'is_trending' => filter_var($request->is_trending, FILTER_VALIDATE_BOOLEAN),
+            'is_new' => filter_var($request->is_new, FILTER_VALIDATE_BOOLEAN),
         ]);
 
         ActivityLog::logActivity(auth()->id(), 'film_updated', "Updated film: {$film->title}", ['film_id' => $film->id]);

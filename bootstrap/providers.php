@@ -2,5 +2,5 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    Jenssegers\Mongodb\MongodbServiceProvider::class,
+    MongoDB\Laravel\MongoDBServiceProvider::class,
 ];
