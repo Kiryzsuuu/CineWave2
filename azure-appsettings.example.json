@@ -1,0 +1,50 @@
+[
+  {
+    "name": "APP_NAME",
+    "value": "CineWave"
+  },
+  {
+    "name": "APP_ENV",
+    "value": "production"
+  },
+  {
+    "name": "APP_KEY",
+    "value": "<GENERATE_WITH: php artisan key:generate --show>"
+  },
+  {
+    "name": "APP_DEBUG",
+    "value": "false"
+  },
+  {
+    "name": "APP_URL",
+    "value": "https://<your-app>.azurewebsites.net"
+  },
+  {
+    "name": "DB_CONNECTION",
+    "value": "mongodb"
+  },
+  {
+    "name": "DB_URI",
+    "value": "mongodb+srv://<username>:<password>@<cluster>/?retryWrites=true&w=majority&appName=<appName>"
+  },
+  {
+    "name": "DB_DATABASE",
+    "value": "cinewave"
+  },
+  {
+    "name": "SESSION_DRIVER",
+    "value": "file"
+  },
+  {
+    "name": "CACHE_STORE",
+    "value": "file"
+  },
+  {
+    "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+    "value": "true"
+  },
+  {
+    "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+    "value": "false"
+  }
+]

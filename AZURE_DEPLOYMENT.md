@@ -31,7 +31,7 @@ az webapp create --resource-group CineWave-RG --plan CineWave-Plan --name cinewa
 ### 5. Configure Application Settings
 ```bash
 # Set APP_KEY
-az webapp config appsettings set --resource-group CineWave-RG --name cinewave-app --settings APP_KEY="base64:uQKpwDLbmTAj3nqlYTwugiRtv6dXJ/qo/aY3CbpP2EA="
+az webapp config appsettings set --resource-group CineWave-RG --name cinewave-app --settings APP_KEY="<your-app-key>"
 
 # Set environment to production
 az webapp config appsettings set --resource-group CineWave-RG --name cinewave-app --settings APP_ENV=production
@@ -42,7 +42,7 @@ az webapp config appsettings set --resource-group CineWave-RG --name cinewave-ap
 # Set MongoDB connection
 az webapp config appsettings set --resource-group CineWave-RG --name cinewave-app --settings DB_CONNECTION=mongodb
 
-az webapp config appsettings set --resource-group CineWave-RG --name cinewave-app --settings DB_URI="mongodb+srv://maskiryz23_db_user:biSdlM7bJKVBA8QP@cnw.0gsh98f.mongodb.net/?appName=CNW"
+az webapp config appsettings set --resource-group CineWave-RG --name cinewave-app --settings DB_URI="<your-mongodb-uri>"
 
 az webapp config appsettings set --resource-group CineWave-RG --name cinewave-app --settings DB_DATABASE=cinewave
 

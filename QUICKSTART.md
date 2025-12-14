@@ -42,15 +42,15 @@ APP_URL=http://localhost:8000
 
 # MongoDB Configuration
 DB_CONNECTION=mongodb
-DB_URI=mongodb+srv://maskiryz23_db_user:biSdlM7bJKVBA8QP@cnw.0gsh98f.mongodb.net/?appName=CNW
+DB_URI=<your-mongodb-uri>
 DB_DATABASE=cinewave
 
 # Email Configuration (for OTP)
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
-MAIL_USERNAME=maskiryz23@gmail.com
-MAIL_PASSWORD="aeth lqgk huov pdsp"
+MAIL_USERNAME=<smtp-username>
+MAIL_PASSWORD=<smtp-password>
 MAIL_ENCRYPTION=tls
 
 # Session & Cache (use 'file' for local development)
@@ -114,7 +114,7 @@ php artisan db:seed
 ```
 
 This creates:
-- **Admin account:** maskiryz23@gmail.com / admin123
+- **Admin account:** optional (set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` before running seeder)
 - Sample categories (Action, Comedy, Drama, etc.)
 - Sample films
 
@@ -136,9 +136,15 @@ Access the application at: http://localhost:8000
 ## Default Accounts
 
 ### Admin Account
-- **Email:** maskiryz23@gmail.com
-- **Password:** admin123
-- **Access:** Full admin panel access
+No default admin account is seeded automatically.
+
+To seed an admin intentionally (recommended for local/dev only), set:
+- `SEED_ADMIN_EMAIL`
+- `SEED_ADMIN_PASSWORD`
+Then run:
+```bash
+php artisan db:seed
+```
 
 ## Common Issues & Solutions
 

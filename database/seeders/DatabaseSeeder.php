@@ -15,14 +15,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Admin User
-        User::create([
-            'name' => 'Admin CineWave',
-            'email' => 'maskiryz23@gmail.com',
-            'password' => Hash::make('admin123'),
-            'is_admin' => true,
-            'is_verified' => true,
-        ]);
+        // Optional Admin User seeding (recommended for local/dev only)
+        // Set these via environment variables when you intentionally want a default admin:
+        //   SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD, (optional) SEED_ADMIN_NAME
+        $seedAdminEmail = env('SEED_ADMIN_EMAIL');
+        $seedAdminPassword = env('SEED_ADMIN_PASSWORD');
+        $seedAdminName = env('SEED_ADMIN_NAME', 'Admin CineWave');
+
+        if (!empty($seedAdminEmail) && !empty($seedAdminPassword)) {
+            User::updateOrCreate(
+                ['email' => $seedAdminEmail],
+                [
+                    'name' => $seedAdminName,
+                    'password' => Hash::make($seedAdminPassword),
+                    'is_admin' => true,
+                    'is_verified' => true,
+                ]
+            );
+        }
 
         // Create Categories
         $categories = [

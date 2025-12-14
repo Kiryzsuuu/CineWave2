@@ -36,21 +36,21 @@ Add the following environment variables:
 ```
 APP_NAME=CineWave
 APP_ENV=production
-APP_KEY=base64:uQKpwDLbmTAj3nqlYTwugiRtv6dXJ/qo/aY3CbpP2EA=
+APP_KEY=<your-app-key>
 APP_DEBUG=false
 APP_URL=https://your-app-name.azurewebsites.net
 
 DB_CONNECTION=mongodb
-DB_URI=mongodb+srv://maskiryz23_db_user:biSdlM7bJKVBA8QP@cnw.0gsh98f.mongodb.net/?appName=CNW
+DB_URI=<your-mongodb-uri>
 DB_DATABASE=cinewave
 
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
-MAIL_USERNAME=maskiryz23@gmail.com
-MAIL_PASSWORD=aeth lqgk huov pdsp
+MAIL_USERNAME=<smtp-username>
+MAIL_PASSWORD=<smtp-password>
 MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=maskiryz23@gmail.com
+MAIL_FROM_ADDRESS=<from-address>
 MAIL_FROM_NAME=CineWave
 
 SESSION_DRIVER=file
@@ -123,7 +123,7 @@ php artisan db:seed
 ```
 
 This will create:
-- Admin account (maskiryz23@gmail.com / admin123)
+- Admin account: optional (set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in App Service App Settings before running `php artisan db:seed`)
 - Sample categories
 - Sample films
 

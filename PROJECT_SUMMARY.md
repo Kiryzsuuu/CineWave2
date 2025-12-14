@@ -118,7 +118,7 @@ Semua komponen utama telah selesai dibuat dan siap untuk deployment.
 
 ### 7. Database
 ✅ **Seeder:**
-- Admin account: maskiryz23@gmail.com / admin123
+- Admin account: optional (set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` before running `php artisan db:seed`)
 - 8 sample categories
 - 2 sample films
 - Ready to run with `php artisan db:seed`
@@ -202,9 +202,9 @@ Lihat file `DEPLOYMENT.md` untuk panduan lengkap step-by-step.
 - **Email:** maskiryz23@gmail.com
 - **App Password:** (See .env file)
 
-### Admin Account (Default)
-- **Email:** maskiryz23@gmail.com
-- **Password:** admin123
+### Admin Account
+- **Default admin is not seeded automatically.**
+- To seed one intentionally, set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` and run the seeder.
 
 ### GitHub Repository
 - **URL:** https://github.com/Kiryzsuuu/CineWave2.git
@@ -254,12 +254,7 @@ CineWave2/
 
 ## 🎬 Demo Accounts
 
-Setelah run `php artisan db:seed`:
-
-**Admin:**
-- Email: maskiryz23@gmail.com
-- Password: admin123
-- Access: Full admin panel
+If you want a demo admin account, set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` and then run `php artisan db:seed`.
 
 **Sample Films:**
 - The Shawshank Redemption
