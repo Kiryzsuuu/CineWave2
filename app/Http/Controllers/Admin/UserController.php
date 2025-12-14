@@ -34,8 +34,8 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'is_admin' => $request->is_admin ?? false,
-            'is_verified' => true,
+            'is_admin' => filter_var($request->is_admin, FILTER_VALIDATE_BOOLEAN),
+            'is_verified' => filter_var($request->is_verified ?? true, FILTER_VALIDATE_BOOLEAN),
         ]);
 
         ActivityLog::logActivity(auth()->id(), 'user_created', "Created user: {$user->email}", ['user_id' => $user->id]);
@@ -61,7 +61,8 @@ class UserController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            'is_admin' => $request->is_admin ?? false,
+            'is_admin' => filter_var($request->is_admin, FILTER_VALIDATE_BOOLEAN),
+            'is_verified' => filter_var($request->is_verified, FILTER_VALIDATE_BOOLEAN),
         ];
 
         if ($request->filled('password')) {

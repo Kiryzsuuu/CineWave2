@@ -348,7 +348,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main style="padding-top: 70px;">
+    <main style="padding-top: 100px;">
         @if(session('success'))
             <div class="container">
                 <div class="alert alert-success">
