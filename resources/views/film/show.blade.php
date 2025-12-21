@@ -116,13 +116,22 @@
                         @csrf
 
                         <label for="rating">Rating</label>
-                        <select name="rating" id="rating" required>
-                            @php($selectedRating = old('rating', $myComment?->rating))
-                            <option value="">Select</option>
-                            @for($i = 1; $i <= 5; $i++)
-                                <option value="{{ $i }}" {{ (string)$selectedRating === (string)$i ? 'selected' : '' }}>{{ $i }}</option>
+                        @php($selectedRating = old('rating', $myComment?->rating))
+                        <div class="star-input" role="radiogroup" aria-label="Rating">
+                            @for($i = 5; $i >= 1; $i--)
+                                <input
+                                    type="radio"
+                                    id="rating-{{ $i }}"
+                                    name="rating"
+                                    value="{{ $i }}"
+                                    {{ (string)$selectedRating === (string)$i ? 'checked' : '' }}
+                                    required
+                                >
+                                <label for="rating-{{ $i }}" title="{{ $i }}">
+                                    <i class="fas fa-star"></i>
+                                </label>
                             @endfor
-                        </select>
+                        </div>
 
                         <label for="body">Comment</label>
                         <textarea name="body" id="body" rows="4" required placeholder="Write your comment...">{{ old('body', $myComment?->body) }}</textarea>
@@ -469,6 +478,48 @@
     background: rgba(0, 0, 0, 0.25);
     color: #fff;
     padding: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.star-input {
+    display: inline-flex;
+    gap: 8px;
+    direction: rtl;
+    unicode-bidi: bidi-override;
+}
+
+.star-input input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.star-input label {
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.2);
+    transition: transform 120ms ease, color 120ms ease;
+    transform-origin: center;
+}
+
+.star-input label:hover,
+.star-input label:hover ~ label {
+    color: #ffd700;
+    transform: scale(1.08);
+}
+
+.star-input input:focus-visible + label {
+    outline: 2px solid rgba(255, 255, 255, 0.25);
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+.star-input input:checked + label,
+.star-input input:checked + label ~ label {
+    color: #ffd700;
 }
 
 .btn-comment,
@@ -545,6 +596,7 @@
 .comment-body {
     color: #e5e5e5;
     line-height: 1.5;
+    font-size: 1rem;
 }
 
 .reply-form {
@@ -586,6 +638,7 @@
 .reply-body {
     color: #e5e5e5;
     line-height: 1.5;
+    font-size: 1rem;
 }
 
 .comment-empty {
