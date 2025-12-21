@@ -147,7 +147,11 @@
             font-weight: 600;
             font-size: 14px;
             transition: all 0.3s;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            white-space: nowrap;
             border: none;
             cursor: pointer;
         }
@@ -280,6 +284,19 @@
 
             .navbar-left {
                 gap: 15px;
+            }
+
+            .navbar-content {
+                gap: 10px;
+            }
+
+            .navbar-right {
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 13px;
             }
         }
     </style>
