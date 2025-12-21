@@ -83,6 +83,112 @@
             </div>
         </div>
 
+        <div class="comments-section">
+            <h2>Ratings & Comments</h2>
+
+            <div class="ratings-summary">
+                <div class="ratings-average">
+                    <span class="avg-number">{{ $userRatingAvg ? number_format((float) $userRatingAvg, 1) : '0.0' }}</span>
+                    <span class="avg-stars">/ 5</span>
+                </div>
+                <div class="ratings-count">
+                    {{ number_format((int) $userRatingCount) }} rating{{ ((int) $userRatingCount) === 1 ? '' : 's' }}
+                </div>
+            </div>
+
+            @if(session('success'))
+                <div class="comment-flash success">{{ session('success') }}</div>
+            @endif
+            @if($errors->any())
+                <div class="comment-flash error">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            @auth
+                <div class="comment-form">
+                    <h3>{{ $myComment ? 'Update Your Rating & Comment' : 'Leave a Rating & Comment' }}</h3>
+                    <form action="{{ route('film.comments.store', $film->slug) }}" method="POST">
+                        @csrf
+
+                        <label for="rating">Rating</label>
+                        <select name="rating" id="rating" required>
+                            @php($selectedRating = old('rating', $myComment?->rating))
+                            <option value="">Select</option>
+                            @for($i = 1; $i <= 5; $i++)
+                                <option value="{{ $i }}" {{ (string)$selectedRating === (string)$i ? 'selected' : '' }}>{{ $i }}</option>
+                            @endfor
+                        </select>
+
+                        <label for="body">Comment</label>
+                        <textarea name="body" id="body" rows="4" required placeholder="Write your comment...">{{ old('body', $myComment?->body) }}</textarea>
+
+                        <button type="submit" class="btn-comment">{{ $myComment ? 'Update' : 'Post' }}</button>
+                    </form>
+                </div>
+            @else
+                <div class="comment-guest">
+                    <a href="{{ route('login') }}" class="btn-comment">Login to rate & comment</a>
+                </div>
+            @endauth
+
+            <div class="comment-list">
+                @if(($topComments ?? collect())->count() === 0)
+                    <div class="comment-empty">No comments yet. Be the first!</div>
+                @else
+                    @foreach($topComments as $comment)
+                        <div class="comment-item" id="comment-{{ (string) $comment->id }}">
+                            <div class="comment-header">
+                                <div class="comment-author">
+                                    <strong>{{ $comment->user_name ?? 'User' }}</strong>
+                                    @if(auth()->check() && (string) $comment->user_id === (string) auth()->id())
+                                        <span class="comment-badge">You</span>
+                                    @endif
+                                </div>
+                                <div class="comment-meta">
+                                    @if(!is_null($comment->rating))
+                                        <span class="comment-rating"><i class="fas fa-star"></i> {{ (int) $comment->rating }}/5</span>
+                                    @endif
+                                    <span class="comment-date">{{ optional($comment->created_at)->diffForHumans() }}</span>
+                                </div>
+                            </div>
+
+                            <div class="comment-body">{!! nl2br(e($comment->body)) !!}</div>
+
+                            @auth
+                                <div class="reply-form">
+                                    <form action="{{ route('comments.reply', (string) $comment->id) }}" method="POST">
+                                        @csrf
+                                        <textarea name="body" rows="2" required placeholder="Write a reply..."></textarea>
+                                        <button type="submit" class="btn-reply">Reply</button>
+                                    </form>
+                                </div>
+                            @endauth
+
+                            @php($replies = ($repliesByParent[(string) $comment->id] ?? collect()))
+                            @if($replies->count() > 0)
+                                <div class="reply-list">
+                                    @foreach($replies as $reply)
+                                        <div class="reply-item">
+                                            <div class="reply-header">
+                                                <strong>{{ $reply->user_name ?? 'User' }}</strong>
+                                                <span class="reply-date">{{ optional($reply->created_at)->diffForHumans() }}</span>
+                                            </div>
+                                            <div class="reply-body">{!! nl2br(e($reply->body)) !!}</div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+
         <!-- Similar Films -->
         @if($similarFilms->count() > 0)
             <div class="similar-films">
@@ -282,6 +388,211 @@
     margin-top: 60px;
 }
 
+.comments-section {
+    margin-top: 60px;
+    background: rgba(20, 20, 20, 0.6);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.comments-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.ratings-summary {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+    margin-bottom: 20px;
+    color: #999;
+}
+
+.ratings-average {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.avg-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.avg-stars {
+    color: #999;
+}
+
+.comment-flash {
+    margin: 10px 0 20px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e5e5e5;
+}
+
+.comment-flash.success {
+    background: rgba(40, 167, 69, 0.2);
+}
+
+.comment-flash.error {
+    background: rgba(229, 9, 20, 0.15);
+}
+
+.comment-flash ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.comment-form h3 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+}
+
+.comment-form form {
+    display: grid;
+    gap: 10px;
+}
+
+.comment-form label {
+    color: #999;
+    font-size: 0.95rem;
+}
+
+.comment-form select,
+.comment-form textarea,
+.reply-form textarea {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.25);
+    color: #fff;
+    padding: 10px;
+}
+
+.btn-comment,
+.btn-reply {
+    display: inline-block;
+    padding: 12px 18px;
+    background: #e50914;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    width: fit-content;
+}
+
+.btn-comment:hover,
+.btn-reply:hover {
+    background: #f40612;
+}
+
+.comment-guest {
+    margin-bottom: 20px;
+}
+
+.comment-list {
+    margin-top: 25px;
+    display: grid;
+    gap: 15px;
+}
+
+.comment-item {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comment-badge {
+    background: rgba(40, 167, 69, 0.25);
+    color: #fff;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.comment-meta {
+    display: flex;
+    gap: 12px;
+    color: #999;
+    font-size: 0.9rem;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.comment-rating {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.comment-body {
+    color: #e5e5e5;
+    line-height: 1.5;
+}
+
+.reply-form {
+    margin-top: 12px;
+}
+
+.reply-form form {
+    display: grid;
+    gap: 10px;
+}
+
+.reply-list {
+    margin-top: 12px;
+    padding-left: 14px;
+    border-left: 2px solid rgba(255, 255, 255, 0.12);
+    display: grid;
+    gap: 10px;
+}
+
+.reply-item {
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.reply-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: #999;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+
+.reply-header strong {
+    color: #fff;
+}
+
+.reply-body {
+    color: #e5e5e5;
+    line-height: 1.5;
+}
+
+.comment-empty {
+    color: #999;
+    padding: 10px 0;
+}
+
 .similar-films h2 {
     font-size: 1.8rem;
     margin-bottom: 25px;
@@ -391,6 +702,11 @@
     
     .films-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
 </style>

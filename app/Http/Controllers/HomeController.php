@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Film;
 use App\Models\Category;
 use App\Models\ActivityLog;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -87,7 +88,47 @@ class HomeController extends Controller
                            ->limit(10)
                            ->get();
 
-        return view('film.show', compact('film', 'similarFilms'));
+        $topComments = Comment::where('film_id', (string) $film->id)
+            ->whereNull('parent_id')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $repliesByParent = collect();
+        if ($topComments->count() > 0) {
+            $parentIds = $topComments->pluck('id')->map(fn ($id) => (string) $id)->all();
+            $repliesByParent = Comment::whereIn('parent_id', $parentIds)
+                ->orderBy('created_at', 'asc')
+                ->get()
+                ->groupBy('parent_id');
+        }
+
+        $userRatingAvg = Comment::where('film_id', (string) $film->id)
+            ->whereNull('parent_id')
+            ->whereNotNull('rating')
+            ->avg('rating');
+
+        $userRatingCount = Comment::where('film_id', (string) $film->id)
+            ->whereNull('parent_id')
+            ->whereNotNull('rating')
+            ->count();
+
+        $myComment = null;
+        if (auth()->check()) {
+            $myComment = Comment::where('film_id', (string) $film->id)
+                ->whereNull('parent_id')
+                ->where('user_id', (string) auth()->id())
+                ->first();
+        }
+
+        return view('film.show', compact(
+            'film',
+            'similarFilms',
+            'topComments',
+            'repliesByParent',
+            'userRatingAvg',
+            'userRatingCount',
+            'myComment'
+        ));
     }
 
     public function watch(string $slug)

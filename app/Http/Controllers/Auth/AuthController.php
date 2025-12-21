@@ -8,8 +8,10 @@ use App\Models\Otp;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -48,10 +50,21 @@ class AuthController extends Controller
         $otp = Otp::generate($user->email, 'verification');
         
         // Send OTP via email
-        Mail::send('emails.otp', ['otp' => $otp, 'name' => $user->name], function ($message) use ($user) {
-            $message->to($user->email)
-                    ->subject('Verifikasi Email - CineWave');
-        });
+        try {
+            Mail::send('emails.otp', ['otp' => $otp, 'name' => $user->name], function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('Verifikasi Email - CineWave');
+            });
+        } catch (Throwable $e) {
+            Log::error('Failed to send OTP email (register)', [
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()
+                ->withErrors(['email' => 'Gagal mengirim email OTP. Cek konfigurasi email, lalu coba lagi.'])
+                ->withInput();
+        }
 
         ActivityLog::logActivity($user->id, 'register', 'User registered successfully');
 
@@ -166,10 +179,19 @@ class AuthController extends Controller
 
         $otp = Otp::generate($user->email, 'verification');
         
-        Mail::send('emails.otp', ['otp' => $otp, 'name' => $user->name], function ($message) use ($user) {
-            $message->to($user->email)
-                    ->subject('Verifikasi Email - CineWave');
-        });
+        try {
+            Mail::send('emails.otp', ['otp' => $otp, 'name' => $user->name], function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('Verifikasi Email - CineWave');
+            });
+        } catch (Throwable $e) {
+            Log::error('Failed to send OTP email (resend)', [
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->withErrors(['email' => 'Gagal mengirim email OTP. Silakan coba lagi nanti.']);
+        }
 
         return back()->with('success', 'Kode OTP baru telah dikirim ke email Anda.');
     }

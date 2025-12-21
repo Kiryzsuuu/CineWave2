@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WatchlistController;
@@ -29,6 +30,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/watch/{slug}', [HomeController::class, 'watch'])->name('film.watch');
+
+    // Comments + ratings
+    Route::post('/film/{slug}/comments', [CommentController::class, 'storeFilmComment'])->name('film.comments.store');
+    Route::post('/comments/{commentId}/reply', [CommentController::class, 'storeReply'])->name('comments.reply');
     
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
